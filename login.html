@@ -169,42 +169,42 @@
     
              <label for="chk" aria-hidden="true"> wisdom foundation school </label>
      <label for="chk" aria-hidden="true"> CBT PORTAL </label>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
+    <input type="text" id="username" placeholder="Enter Username" required><br>
+    <input type="password" id="password" placeholder="Enter Password" required><br>
     <button onclick="login()">Login</button>
-    <p id="error" class="error"></p>
+    <label for = "chk"> WISDOM CBT PORTAL </label> 
+    <p class="error" id="errorMsg"></p>
   </div>
 
   <script>
     async function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("error");
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
 
       try {
-        // Fetch register.json
         const response = await fetch("register.json");
-        const users = await response.json();
+        const data = await response.json();
 
-        // Find matching user
-        const user = users.find(u => u.username === username && u.password === password);
+        const foundUser = data.find(u => u.username === user && u.password === pass);
 
-        if (user) {
-          // Save user info to localStorage
-          localStorage.setItem("currentUser", JSON.stringify(user));
+        if (foundUser) {
+          // Store user info (optional)
+          localStorage.setItem("currentUser", JSON.stringify(foundUser));
 
           // Redirect to dashboard
           window.location.href = "instructions.html";
         } else {
-          errorMsg.textContent = "Invalid username or password.";
+          errorMsg.textContent = "Invalid username or password!";
         }
       } catch (err) {
-        errorMsg.textContent = "Error loading register.json";
+        errorMsg.textContent = "Error loading user data!";
         console.error(err);
       }
     }
 
-       function validateForm() {
+       // Validate form fields
+        function validateForm() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
            
@@ -224,5 +224,6 @@
     }
 
   </script>
+
 </body>
 </html>

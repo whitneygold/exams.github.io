@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Results</title>
+<style>
+body { font-family: Arial; text-align:center; padding:20px; }
+.correct{color:green;} .incorrect{color:red;}
+</style>
+</head>
+<body>
+<h1>Exam Results</h1>
+<p id="welcome"></p>
+<p id="score"></p>
+<p id="answered"></p>
+<p id="unanswered"></p>
+<h2>Your Answers</h2>
+<div id="answersList"></div>
+
+<script>
+const resultData = JSON.parse(localStorage.getItem('examResult'));
+if(!resultData){ document.body.innerHTML="<p>No exam data found.</p>"; } 
+else{
+    const {username, score, total, answered, unanswered, userAnswers, questions} = resultData;
+    document.getElementById('welcome').textContent=`Student: ${username}`;
+    document.getElementById('score').textContent=`Score: ${score}/${total}`;
+    document.getElementById('answered').textContent=`Answered: ${answered}`;
+    document.getElementById('unanswered').textContent=`Unanswered: ${unanswered}`;
+
+    const answersContainer=document.getElementById('answersList');
+    questions.forEach((q,i)=>{
+        const ua = userAnswers[i] || 'Not Answered';
+        const correct = q.Answer;
+        const div=document.createElement('div');
+        div.innerHTML=`<strong>Q${i+1}:</strong> ${q.questionText} <br>
+                       <strong>Your Answer:</strong> <span class="${ua===correct?'correct':'incorrect'}">${ua}</span> 
+                       | <strong>Correct:</strong> ${correct}<hr>`;
+        answersContainer.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>www.wisdomschools.org</title>
+<link rel="icon" type="image/x-icon" href="fav_icon2.ico">
+<style>
+
+  
+                    body {
+                position: relative;
+                z-index: 1;
+            }
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url('templogo1.jpg') no-repeat center center;
+                background-size: 300px 300px; /* adjust as needed */
+                opacity: 0.1; /* watermark transparency */
+                z-index: 0;
+                pointer-events: none;
+                text-align: center 
+                padding: 0;/* allow clicks through */
+                margin: 0;
+                padding: 0;
+                 background-color: lime;
+                align-items: center;       
+                text-align: center;
+            }
+  .dark-theme { background: #1e1e1e url('watermark.png') no-repeat center center fixed; background-size: cover; color: #f7f7f7; }
+
+  /* Top Nav */
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+  }
+  .dark-theme .top-nav { background-color: #2c7a2c; }
+  .top-nav h1 { font-size: 1.5rem; margin: 0; text-align: center; flex: 1; }
+  .top-nav button { background: transparent; border: 1px solid white; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+  /* Layout */
+  .main { display: flex; min-height: calc(100vh - 60px); }
+
+  /* Side Navbar */
+  .side-nav {
+    width: 200px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+  }
+  .dark-theme .side-nav { background-color: #222; }
+  .side-nav h3 { margin-top: 0; font-size: 1rem; }
+  .side-nav p { margin: 8px 0; font-size: 0.9rem; }
+
+  /* Exam Container */
+  .exam-container { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+  .question-box {
+    background-color: #fff; border-radius: 8px; padding: 15px;
+    margin-bottom: 15px; border: 1px solid #ccc; overflow-y: auto; max-height: 250px;
+  }
+  .dark-theme .question-box { background-color: #2b2b2b; border-color: #555; }
+  .question-text { font-weight: 500; margin-bottom: 12px; }
+  img.question-image { max-width: 100%; display: block; margin: 10px 0; border-radius: 5px; }
+
+  /* Options */
+  .options { display: flex; justify-content: space-between; flex-wrap: wrap; }
+  .options label {
+    display: flex; align-items: center; padding: 8px 12px;
+    border: 1px solid #ccc; border-radius: 5px; margin: 4px 0; cursor: pointer;
+    flex: 1 1 45%;
+    background: #f1f1f1;
+  }
+  .dark-theme .options label { background: #444; border-color: #666; color: #f7f7f7; }
+  .options input[type="radio"] { margin-right: 8px; }
+
+  /* Question Buttons */
+  #questionButtons { margin-top: 10px; display: flex; flex-wrap: wrap; }
+  .question-btn { margin: 2px; padding: 6px 10px; border-radius: 5px; border: none; cursor: pointer; background: #eee; }
+  .question-btn.active { background: #5cb85c; color: white; }
+  .question-btn.answered { background: #337ab7; color: white; }
+
+  /* Timer */
+  #timer-display { font-weight: bold; margin-bottom: 10px; }
+
+  /* Scrollbar */
+  .question-box::-webkit-scrollbar { width: 8px; }
+  .question-box::-webkit-scrollbar-thumb { background-color: #4CAF50; border-radius: 4px; }
+  .dark-theme .question-box::-webkit-scrollbar-thumb { background-color: #2c7a2c; }
+
+  /* Submit Button */
+  .submit-btn { margin-top: 10px; padding: 10px 20px; font-size: 1rem; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  .dark-theme .submit-btn { background-color: #2c7a2c; }
+
+  #questionContainer { 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    max-height: 200px; /* adjust as needed */ 
+    overflow-y: auto; 
+    margin-bottom: 10px;
+  }
+  .option-label { display: block; margin: 5px 0; }
+  .question-btn { margin: 2px; padding: 5px 10px; }
+  #questionImage { max-width: 100%; display: none; margin: 10px 0; }
+  #timer-display { font-weight: bold; margin-bottom: 10px; }
+
+  #nav-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        #nav-buttons button {
+            margin: 0 10px; /* Add spacing between buttons */
+        }
+
+        .btn-warning, .btn-success ,.btn-cool{
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+         .btn-warning {
+            background-color: orange;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: green;
+            color: white;
+        }
+
+        .btn-cool {
+            background-color: lime;
+            color: red;
+        }
+
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+         #timer {
+        font-size: 24px;  /* Larger font for visibility */
+        font-weight: bold; /* Make it bold */
+        color: lime; /* Lime color */
+        text-align: center; /* Center it */
+        margin-bottom: 10px; /* Space below before question-container */
+    }
+    /* Container to hold the moving text */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: fuchsia;
+            padding: 10px 0;
+        }
+        .question-label {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color:yellow;
+        }
+
+
+        /* Moving text animation */
+        .marquee-text {
+            display: inline-block;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            animation: marquee 10s linear infinite;
+        }
+
+        /* Keyframes for moving text */
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+           #student-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+       
+        #welcome-message {
+            color: red; /* Make text red */
+            font-size: 24px; /* Increase size for emphasis */
+            font-weight: bold; /* Make it bold */
+        }
+            /* Container for answered/unanswered count */
+        /* Answered/Unanswered Count Box */
+       /* Answered/Unanswered Count Box */
+        #userAnswerCount {
+            position: absolute;
+            top: 20px;
+            left: 20px; /* Moved to the left */
+            background-color: rgba(0, 0, 0, 0.6); /* Transparent black */
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            width: 200px;
+        }
+
+        /* Answered/Unanswered Labels */
+        #answeredLabel {
+            color: lime;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #unansweredLabel {
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Positioning the userAnswerCount beside the question */
+        .question-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+    #question-container {
+        width: 70%; /* Takes up 70% of the screen */
+    }
+
+        #question-container {
+            margin: 20px auto;
+            width: 70%;
+            padding: 20px;
+            background-color: fuchsia;
+            border-radius: 8px;
+            text-align: left;
+        }
+        #questionTextContainer {
+            /*text-align: left !important;*/
+        }
+
+
+        #questionText {
+            width: 96%;
+            height: 150px;
+            resize: none;
+            padding: 10px;
+            font-size: 18px;
+            color: red;
+            background-color: lime;
+            border-radius: 5px;
+            border: none;
+            /*text-align: left;*/
+        }
+        
+     .question-text {
+          max-height: 300px; /* or any desired height */
+          max-width: 100%;   /* or a fixed width like 600px */
+          overflow-y: auto;  /* vertical scroll */
+          overflow-x: auto;  /* horizontal scroll if needed */
+          padding: 10px;
+          border: 1px solid #ccc; /* optional for visibility */
+          white-space: pre-wrap;  /* preserve line breaks and spacing */
+    }
+         
+         .scroll-container {
+        max-height: 300px;
+        max-width: 100%;
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+
+      .question-text {
+        white-space: pre-wrap;
+      }
+
+        .option {
+            font-weight: bold;
+            color: lime;
+            margin: 10px 0;
+            text-align: lefts;
+        }
+
+        #logout {
+            background-color: red;
+            padding: 10px 20px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #optionz {
+            list-style-type: none;
+            padding: 0;
+            margin-left: 0;
+            color: lime;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .option-group input {
+        margin-right: 10px;
+        transform: scale(1.5); /* Make the radio buttons bigger */
+       }
+
+        .option-group label {
+        font-weight: bold; /* Make the labels bold */
+        font-size: 18px; /* Adjust font size if needed */
+       }
+
+        #optionz li {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        #optionz li input {
+            margin-right: 10px;
+        }
+        
+        #nav-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+         .windows-activate {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-color);
+            font-size: 14px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+
+  
+</style>
+</head>
+<body>
+
+<h2 id="welcome-text"></h2>
+<img id="student-image" src="" alt="Student Image" width="80">
+<p id="exam-info"></p>
+<div id="timer-display"></div>
+
+<div id="questionContainer">
+  <div id="questionText"></div>
+  <img id="questionImage" src="" alt="Question Image">
+</div>
+
+
+   <div class="options">
+        <label>A.<input type="radio" name="option" id="optionA"><span id="optionAText"></span></label>
+        <label>B.<input type="radio" name="option" id="optionB"><span id="optionBText"></span></label>
+        <label>C.<input type="radio" name="option" id="optionC"><span id="optionCText"></span></label>
+        <label>D.<input type="radio" name="option" id="optionD"><span id="optionDText"></span></label>
+      </div>
+
+<div id="questionButtons"></div>
+<div><p>...</p></div>
+<div><p>...</p></div>
+<div><p>...</p></div>
+
+<div class="nav-buttons">
+  ----------------------<button onclick="previousQuestion()" class="btn-cool">Previous</button>-----------------------------------------------------------------
+  <button onclick="nextQuestion()" class="btn-cool">Next</button>-----------------------------------------------------------------
+   <button onclick="submitQuiz()" class="btn-cool">Submit</button>
+</div>
+<div><p>...</p></div>
+<div><p>...</p></div>
+
+ <div id="userAnswerCount">
+  Answered: <span id="answeredLabel">0</span> | Unanswered: <span id="unansweredLabel">0</span>
+</div>
+ <div class="windows-activate">
+                           <p> &copy cbt.wisdomschools.org</p>
+                        </div>
+<script>
+const username = localStorage.getItem('username') || 'Guest';
+document.getElementById('welcome-text').textContent = `Welcome, ${username}`;
+
+let questions = [];
+let currentQuestionIndex = 0;
+let userAnswers = [];
+
+// Debug logging
+function logDebug(msg) {
+  console.log(new Date().toISOString() + ' - ' + msg);
+}
+
+window.onload = function() {
+  fetchQuestions();
+  initOptionListeners();
+  startTimer(3600); // 60 mins
+};
+
+// Timer
+function startTimer(seconds){
+  const timerDisplay = document.getElementById('timer-display');
+  let timeLeft = seconds;
+  setInterval(()=>{
+    const mins = Math.floor(timeLeft/60);
+    const secs = timeLeft % 60;
+    timerDisplay.textContent = `Time Left: ${mins}:${secs < 10 ? '0'+secs : secs}`;
+    if(timeLeft>0) timeLeft--;
+  },1000);
+}
+
+// Fetch questions from JSON
+function fetchQuestions(){
+  logDebug("Fetching questions...");
+  fetch('questions/questions.json')
+    .then(res=>{
+      logDebug("HTTP status: " + res.status);
+      if(!res.ok) throw new Error("Failed to load questions");
+      return res.json();
+    })
+    .then(data=>{
+      questions = data;
+      logDebug(`Questions loaded: ${JSON.stringify(questions)}`);
+      shuffleQuestions();
+      loadQuestion();
+      renderQuestionButtons();
+      countUserSelections();
+    })
+    .catch(err=>{
+      console.error(err);
+      alert("Could not load questions. See console for details.");
+    });
+}
+
+// Shuffle questions
+function shuffleQuestions(){
+  for(let i=questions.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [questions[i],questions[j]] = [questions[j],questions[i]];
+  }
+}
+
+// Load current question
+function loadQuestion(){
+  clearSelection();
+  const q = questions[currentQuestionIndex];
+  if(!q){
+    logDebug(`No question at index ${currentQuestionIndex}`);
+    return;
+  }
+  logDebug(`Loading Q${currentQuestionIndex+1}: ${q.question_Text}`);
+
+  // Display HTML content safely
+  document.getElementById('questionText').innerHTML = q.question_Text;
+  document.getElementById('optionAText').innerHTML = q.OptionA;
+  document.getElementById('optionBText').innerHTML = q.OptionB;
+  document.getElementById('optionCText').innerHTML = q.OptionC;
+  document.getElementById('optionDText').innerHTML = q.OptionD;
+
+  // Display image if exists
+  const imgEl = document.getElementById('questionImage');
+  if(q.question_Image){
+    imgEl.src = `uploads/${q.question_Image}`;
+    imgEl.style.display = 'block';
+  } else {
+    imgEl.style.display = 'none';
+  }
+
+  // Restore previous selection if exists
+  const saved = userAnswers[currentQuestionIndex];
+  if(saved) document.getElementById(saved).checked = true;
+
+  highlightCurrentButton();
+}
+
+// Clear radio selection
+function clearSelection(){
+  document.querySelectorAll('input[name="option"]').forEach(opt=>opt.checked=false);
+}
+
+// Save selected answer
+function saveUserAnswer(){
+  const selected = document.querySelector('input[name="option"]:checked');
+  if(selected) userAnswers[currentQuestionIndex] = selected.id;
+}
+
+// Render question buttons
+function renderQuestionButtons(){
+  const container = document.getElementById('questionButtons');
+  container.innerHTML = '';
+  for(let i=0;i<questions.length;i++){
+    const btn = document.createElement('button');
+    btn.textContent = i+1;
+    btn.className='question-btn';
+    btn.onclick = ()=>{
+      saveUserAnswer();
+      currentQuestionIndex=i;
+      loadQuestion();
+      highlightCurrentButton();
+      countUserSelections();
+    };
+    container.appendChild(btn);
+  }
+  highlightCurrentButton();
+}
+
+// Highlight current button
+function highlightCurrentButton(){
+  document.querySelectorAll('.question-btn').forEach((btn,index)=>{
+    const answered = userAnswers[index] !== undefined;
+    const current = index === currentQuestionIndex;
+    btn.style.backgroundColor = current ? '#5cb85c' : (answered ? '#337ab7' : '#eee');
+    btn.style.color = current || answered ? 'white' : 'black';
+  });
+}
+
+// Count answered/unanswered
+function countUserSelections(){
+  const total = questions.length;
+  const answered = userAnswers.filter(ans=>ans!==undefined).length;
+  const unanswered = total - answered;
+  document.getElementById('answeredLabel').innerText = answered;
+  document.getElementById('unansweredLabel').innerText = unanswered;
+}
+
+// Navigation
+function nextQuestion(){ saveUserAnswer(); if(currentQuestionIndex<questions.length-1){ currentQuestionIndex++; loadQuestion(); }else alert("This is the last question."); }
+function previousQuestion(){ saveUserAnswer(); if(currentQuestionIndex>0){ currentQuestionIndex--; loadQuestion(); }else alert("This is the first question."); }
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(event){
+  const key = event.key.toUpperCase();
+  if(['A','B','C','D'].includes(key)){
+    const radio = document.getElementById('option'+key);
+    if(radio){ radio.checked=true; saveUserAnswer(); countUserSelections(); }
+  }
+  if(event.key==='ArrowRight') nextQuestion();
+  if(event.key==='ArrowLeft') previousQuestion();
+});
+
+// Option change listeners
+function initOptionListeners(){
+  document.querySelectorAll('input[name="option"]').forEach(radio=>{
+    radio.addEventListener('change', ()=>{
+      saveUserAnswer();
+      countUserSelections();
+      highlightCurrentButton();
+    });
+  });
+}
+
+function submitQuiz(){
+  saveUserAnswer();
+  localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
+  localStorage.setItem('questions', JSON.stringify(questions));
+  window.location.href = 'result.html';
+}
+
+
+</script>
+
+</body>
+</html>
